@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyQuest - Game Belajar</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;min-height:100vh;color:#fff;background:radial-gradient(circle at top left,#302b63,transparent 35%),radial-gradient(circle at bottom right,#24243e,transparent 40%),#090914;transition:background .5s,filter .5s}
+.game-container{width:min(1100px,94%);margin:auto;padding:25px 0}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+header h1{font-size:2.5rem;color:#00f5ff;text-shadow:0 0 15px #00f5ff}
+header p{color:#aaa;margin-top:5px}.rank-box{text-align:center;padding:12px 20px;border-radius:15px;background:#ffffff14;border:1px solid #ffffff26;box-shadow:0 0 20px #00f5ff26}.rank-box span{color:#ffd700;font-weight:bold}.rank-stars{margin-top:5px}
+.status{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}.stat-card{padding:18px;border-radius:15px;background:#ffffff12;border:1px solid #ffffff1a;text-align:center}.stat-card span{display:block;color:#aaa;font-size:.9rem}.stat-card strong{display:block;font-size:1.5rem;margin-top:8px}
+.experience{margin-bottom:25px}.exp-info{display:flex;justify-content:space-between;margin-bottom:7px}.exp-bar{height:14px;border-radius:20px;background:#171724;overflow:hidden}#expProgress{height:100%;width:0;background:linear-gradient(90deg,#00f5ff,#8a2be2,#ff00ff);box-shadow:0 0 15px #00f5ff;transition:width .5s}
+.reminder{margin-bottom:25px}.reminder h2{margin-bottom:15px}.lesson{display:flex;align-items:center;gap:15px;padding:15px;margin-bottom:10px;border-radius:15px;background:#ffffff0f;border-left:4px solid #00f5ff}.lesson-icon{font-size:1.8rem}.lesson div{flex:1}.lesson p{color:#999;margin-top:3px}.lesson-time{color:#00f5ff;font-weight:bold}
+.quiz-card{padding:30px;border-radius:25px;background:linear-gradient(145deg,#ffffff1a,#ffffff08);border:1px solid #ffffff26;box-shadow:0 20px 60px #0006}.quiz-top{display:flex;justify-content:space-between;color:#00f5ff;font-weight:bold}.question-box{text-align:center;padding:45px 10px}.question-box h2{font-size:2rem}.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px}.answer{padding:18px;border-radius:15px;border:2px solid transparent;background:#171724;color:#fff;font-size:1.05rem;cursor:pointer;transition:.2s}.answer:hover{transform:translateY(-4px);border-color:#00f5ff;box-shadow:0 0 20px #00f5ff4d}.answer.correct{background:#00d26a!important;border-color:#00ff88;animation:correctAnimation .6s}.answer.wrong{background:#5b0b15!important;border-color:#ff1744;animation:wrongAnimation .4s}
+.result{text-align:center;min-height:45px;font-size:1.4rem;font-weight:bold;margin-top:20px}.next-button{display:none;width:100%;margin-top:15px;padding:15px;border:0;border-radius:15px;background:linear-gradient(90deg,#00f5ff,#8a2be2);color:#fff;font-weight:bold;cursor:pointer}.next-button:hover{transform:scale(1.02)}
+body.correct-mode{background:radial-gradient(circle,#00ff88,transparent 30%),#062b1b;animation:brightFlash .6s}body.wrong-mode{background:radial-gradient(circle,#3a0610,transparent 30%),#030305;filter:brightness(.65);animation:darkShake .5s}
+@keyframes correctAnimation{0%{transform:scale(1)}50%{transform:scale(1.08) rotate(-2deg)}100%{transform:scale(1)}}@keyframes wrongAnimation{0%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(10px)}75%{transform:translateX(-7px)}100%{transform:translateX(0)}}@keyframes brightFlash{0%{filter:brightness(1)}50%{filter:brightness(2)}100%{filter:brightness(1)}}@keyframes darkShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+footer{text-align:center;margin-top:25px;color:#666}
+@media(max-width:700px){header{flex-direction:column;gap:15px;text-align:center}header h1{font-size:2rem}.status{grid-template-columns:1fr 1fr}.answers{grid-template-columns:1fr}.question-box h2{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="game-container">
+<header><div><h1>📚 StudyQuest</h1><p>Belajar • Bermain • Naik Rank</p></div><div class="rank-box"><span id="rank">PEMULA</span><div class="rank-stars" id="stars">⭐ ⭐ ⭐</div></div></header>
+<section class="status">
+<div class="stat-card"><span>🏆 Rank</span><strong id="rankText">Pemula</strong></div>
+<div class="stat-card"><span>⭐ Bintang</span><strong id="starCount">3</strong></div>
+<div class="stat-card"><span>🔥 Streak</span><strong id="streak">0</strong></div>
+<div class="stat-card"><span>❤️ Nyawa</span><strong id="lives">3</strong></div>
+</section>
+<section class="experience"><div class="exp-info"><span>EXP</span><span id="expText">0 / 100</span></div><div class="exp-bar"><div id="expProgress"></div></div></section>
+<section class="reminder"><h2>⏰ Pengingat Pelajaran</h2>
+<div class="lesson"><span class="lesson-icon">📐</span><div><strong>Matematika</strong><p>Belajar persamaan kuadrat</p></div><span class="lesson-time">15:00</span></div>
+<div class="lesson"><span class="lesson-icon">🔬</span><div><strong>IPA</strong><p>Sistem tata surya</p></div><span class="lesson-time">17:00</span></div>
+<div class="lesson"><span class="lesson-icon">🌎</span><div><strong>IPS</strong><p>Sejarah Indonesia</p></div><span class="lesson-time">19:00</span></div>
+</section>
+<main class="quiz-card"><div class="quiz-top"><span id="questionNumber">SOAL 1</span><span id="subject">MATEMATIKA</span></div><div class="question-box"><h2 id="question"></h2></div><div id="answers" class="answers"></div><div id="result" class="result"></div><button id="nextButton" class="next-button">SOAL BERIKUTNYA ➜</button></main>
+<footer><p>🎮 StudyQuest • Jadikan belajar lebih seru!</p></footer>
+</div>
+<script>
+const questions=[
+{subject:"MATEMATIKA",question:"Berapakah hasil dari 5 × 6?",answers:["20","25","30","35"],correct:"30"},
+{subject:"IPA",question:"Planet yang dikenal sebagai Planet Merah adalah...",answers:["Venus","Mars","Jupiter","Saturnus"],correct:"Mars"},
+{subject:"IPS",question:"Siapa yang dikenal sebagai Proklamator Kemerdekaan Indonesia?",answers:["Soekarno dan Mohammad Hatta","Soekarno dan Soeharto","Mohammad Hatta dan Ki Hajar Dewantara","Jenderal Sudirman dan Soekarno"],correct:"Soekarno dan Mohammad Hatta"},
+{subject:"BAHASA INDONESIA",question:"Lawan kata dari 'besar' adalah...",answers:["Panjang","Kecil","Tinggi","Lebar"],correct:"Kecil"},
+{subject:"MATEMATIKA",question:"Jika x + 10 = 25, maka nilai x adalah...",answers:["10","15","20","35"],correct:"15"},
+{subject:"IPA",question:"Organ yang digunakan manusia untuk bernapas adalah...",answers:["Jantung","Lambung","Paru-paru","Ginjal"],correct:"Paru-paru"}];
+const ranks=[{name:"Pemula",minExp:0},{name:"Pelajar",minExp:100},{name:"Cerdas",minExp:250},{name:"Ahli",minExp:500},{name:"Genius",minExp:1000}];
+let currentQuestion=0,stars=3,streak=0,lives=3,exp=0,answered=false;
+const $=id=>document.getElementById(id);
+function getRank(){let r=ranks[0];for(const x of ranks)if(exp>=x.minExp)r=x;return r}
+function loadQuestion(){answered=false;document.body.classList.remove("correct-mode","wrong-mode");$("result").textContent="";$("nextButton").style.display="none";$("nextButton").textContent="SOAL BERIKUTNYA ➜";const d=questions[currentQuestion];$("questionNumber").textContent=`SOAL ${currentQuestion+1}`;$("subject").textContent=d.subject;$("question").textContent=d.question;$("answers").innerHTML="";d.answers.forEach(a=>{const b=document.createElement("button");b.className="answer";b.textContent=a;b.onclick=()=>checkAnswer(b,a);$("answers").appendChild(b)})}
+function checkAnswer(button,answer){if(answered)return;answered=true;const correct=questions[currentQuestion].correct;const buttons=document.querySelectorAll(".answer");if(answer===correct){button.classList.add("correct");stars++;streak++;exp+=50;$("result").innerHTML="🎉 BENAR! +⭐ +50 EXP";document.body.classList.add("correct-mode")}else{button.classList.add("wrong");stars=Math.max(0,stars-1);lives--;streak=0;exp=Math.max(0,exp-20);$("result").innerHTML="💀 SALAH! -⭐ -20 EXP";document.body.classList.add("wrong-mode");buttons.forEach(b=>{if(b.textContent===correct)b.classList.add("correct")});if(lives<=0){$("result").innerHTML="💀 GAME OVER! Nyawamu habis.";$("nextButton").textContent="🔄 MAIN LAGI"}}buttons.forEach(b=>b.disabled=true);updateUI();$("nextButton").style.display="block"}
+$("nextButton").onclick=()=>{if(lives<=0)return restartGame();currentQuestion=(currentQuestion+1)%questions.length;loadQuestion()}
+function updateUI(){$("starCount").textContent=stars;$("streak").textContent=streak;$("lives").textContent=lives;const r=getRank();$("rank").textContent=r.name.toUpperCase();$("rankText").textContent=r.name;$("stars").textContent=stars>0?"⭐ ".repeat(Math.min(stars,10)):"💔";const i=ranks.indexOf(r);if(i===ranks.length-1){$("expText").textContent=`${exp} EXP • MAX RANK`;$("expProgress").style.width="100%"}else{const next=ranks[i+1].minExp;const p=((exp-r.minExp)/(next-r.minExp))*100;$("expText").textContent=`${exp} / ${next} EXP`;$("expProgress").style.width=Math.max(0,Math.min(p,100))+"%"}}
+function restartGame(){currentQuestion=0;stars=3;streak=0;lives=3;exp=0;document.body.classList.remove("correct-mode","wrong-mode");updateUI();loadQuestion()}
+updateUI();loadQuestion();
+</script>
+</body>
+</html>
